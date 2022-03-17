@@ -1,3 +1,4 @@
+const e = require('express')
 const express = require('express')
 require('./db/mongoose')
 const User = require('./models/user')
@@ -11,8 +12,9 @@ app.post('/users', (req, res) => {
     const user = new User(req.body)
     user.save().then(() => {
         res.send(user)
-    }).catch((error) =>{
-        throw new Error('Error!', error)
+    }).catch((e) =>{
+        res.status(400).send(e)
+        //res.send(e)
     })
 })
 
