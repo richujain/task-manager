@@ -25,7 +25,10 @@ app.get('/users', (req, res) => {
     }).catch((e) => {
         res.status(500).send()
     })
+      
 })
+
+
 
 // Express provides route parameters to catch the parameters passed through the url.
 //req.params contains all the parameters we add. In this case, it is an object with a single property, ie, id
@@ -41,12 +44,34 @@ app.get('/users/:id', (req, res) => {
     })
 })
 
+
+
 app.post('/tasks', (req, res) => {
     const task = new Task(req.body)
     task.save().then(() => {
         res.send(task)
     }).catch((e) => {
         res.status(400).send(e)
+    })
+})
+
+app.get('/tasks', (req, res) => {
+    Task.find({}).then((tasks) => {
+        res.send(tasks)
+    }).catch((e) => {
+        res.status(500).send()
+    })
+})
+
+app.get('/tasks/:id', (req, res) => {
+    const _id = req.params.id
+    Task.findById(_id).then((task) => {
+        if(!task){
+            return res.status(404).send()
+        }
+        res.send(task)
+    }).catch((e) => {
+        res.status(500).send()
     })
 })
 
