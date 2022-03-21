@@ -72,6 +72,27 @@ app.get('/users/:id', async (req, res) => {
     // })
 })
 
+app.patch('/users/:id', async (req,res) => {
+
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name', 'email', 'password', 'age']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+    //return allowedUpdates.includes(update)
+    // every returns false if one of the condition is false. True only if all the conditions are true.
+    if(!isValidOperation){
+        return res.status(400).send({error: 'Invalid updates!'})
+    }
+    try{
+        const user = await User.findByIdAndUpdate(req.params.id , req.body, { new: true, runValidators: true })
+        // {new: true} will make the function return the updated user rather than the one before updating. 
+        if(!user){
+            return res.status(404).send()
+        }
+        res.send(user)
+    } catch(e){
+        res.status(400).send(e)
+    }
+})
 
 
 app.post('/tasks', async (req, res) => {
