@@ -77,7 +77,12 @@ router.patch('/users/:id', async (req,res) => {
         return res.status(400).send({error: 'Invalid updates!'})
     }
     try{
-        const user = await User.findByIdAndUpdate(req.params.id , req.body, { new: true, runValidators: true })
+        const user =await User.findById(req.params.id)
+        updates.forEach((update) => {
+            user[update] = req.body[update] //We can't use dot operator as the values are dynamic and so it keeps changing. So we have to use bracket notations. 
+        })
+        await user.save()
+        //const user = await User.findByIdAndUpdate(req.params.id , req.body, { new: true, runValidators: true })
         // {new: true} will make the function return the updated user rather than the one before updating. 
         if(!user){
             return res.status(404).send()
