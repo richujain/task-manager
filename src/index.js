@@ -9,6 +9,20 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
+// app.use((req, res, next) => {
+//     if(req.method === 'GET'){
+//         res.send('GET requests are disabled!')
+//     } else{
+//         next()
+//     }
+// })
+
+//Setup middleware for maintainance mode
+app.use((req, res, next) => {
+    res.status(503).send('The site is under maintainance. Please try again after sometime.')
+})
+
+
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
@@ -17,16 +31,18 @@ app.listen(port, () => {
     console.log('Server is up on port '+ port)
 })
 
+const jwt = require('jsonwebtoken')
+
 const bcrypt = require('bcryptjs')
 
 const myFunction = async () => {
-    const password = 'Red12345!'
-    const hashedPassword = await bcrypt.hash(password, 8)
-    // console.log(password)
-    // console.log(hashedPassword)
+    //1st arg: An ID, which will be dynamic (User ID).
+    // 2nd arg: Any series of characters just to check whether our token has been tampered. 
+    // const token = jwt.sign({ _id: 'abc123' }, 'thisismynewcourse', { expiresIn: '7 days' }) 
+    // console.log(token)
 
-    const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
-    //console.log(isMatch)
+    // const data = jwt.verify(token, 'thisismynewcourse')
+    // console.log(data)
 }
 
 myFunction()

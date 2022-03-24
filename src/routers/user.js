@@ -9,7 +9,8 @@ router.post('/users', async (req, res) => {
     try{
         await user.save()
         // The code here runs only if the above code runs successfully without any error. 
-        res.status(201).send(user)
+        const token = await user.generateAuthToken()
+        res.status(201).send({ user, token })
     } catch (e){
         res.status(400).send(e)
     }
@@ -20,6 +21,17 @@ router.post('/users', async (req, res) => {
     //     res.status(400).send(e)
     //     //res.send(e)
     // })
+})
+
+router.post('/users/login', async (req, res) => {
+    try{
+        //You can create your own functions to check login only if we create custom schemas and add it to statics in user model. (findByCredentials)
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
+    } catch(e){
+        res.status(400).send(e)
+    }
 })
 
 router.get('/users', async (req, res) => {
