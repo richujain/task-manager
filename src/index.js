@@ -18,9 +18,9 @@ const port = process.env.PORT || 3000
 // })
 
 //Setup middleware for maintainance mode
-app.use((req, res, next) => {
-    res.status(503).send('The site is under maintainance. Please try again after sometime.')
-})
+// app.use((req, res, next) => {
+//     res.status(503).send('The site is under maintainance. Please try again after sometime.')
+// })
 
 
 app.use(express.json())
