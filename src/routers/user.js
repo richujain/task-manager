@@ -29,7 +29,7 @@ router.post('/users/login', async (req, res) => {
         //You can create your own functions to check login only if we create custom schemas and add it to statics in user model. (findByCredentials)
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
+        res.send({ user: user, token })
     } catch(e){
         res.status(400).send(e)
     }
