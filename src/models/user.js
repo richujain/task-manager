@@ -49,6 +49,15 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+// To add tasks to user model, we use virtual property. 
+// Virtual property is not an actual data stored in a database, it's a relationship b/w 2 entities.
+
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 // .methods are for individual instinct "user" and .statics are for all the "User"
 
 userSchema.methods.toJSON = function () {
