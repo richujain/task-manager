@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Task = require('./task')
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -47,7 +48,9 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
-})
+}, {
+    timestamps: true
+}) //Schema options are send as second argument (TimeStamps)
 
 // To add tasks to user model, we use virtual property. 
 // Virtual property is not an actual data stored in a database, it's a relationship b/w 2 entities.
@@ -99,6 +102,13 @@ userSchema.pre('save', async function (next) {
     }
     
     next() //to track the completion of this function.
+})
+
+// Delete user tasks when user is removed
+userSchema.pre('remove', async function (next) {
+    const user = this
+    await Task.deleteMany({ owner: user._id })
+    next()
 })
 
 const User = mongoose.model('User', userSchema)
