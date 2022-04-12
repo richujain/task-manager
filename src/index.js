@@ -7,19 +7,13 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
-// app.use((req, res, next) => {
-//     if(req.method === 'GET'){
-//         res.send('GET requests are disabled!')
-//     } else{
-//         next()
-//     }
-// })
-
-//Setup middleware for maintainance mode
-// app.use((req, res, next) => {
-//     res.status(503).send('The site is under maintainance. Please try again after sometime.')
-// })
-
+const multer = require('multer')
+const upload = multer({
+    dest: 'images'
+})
+app.post('/upload', upload.single('upload'), (req,res) => {
+    res.send()
+})
 
 app.use(express.json())
 app.use(userRouter)
@@ -32,3 +26,21 @@ app.listen(port, () => {
 const Task = require('./models/task')
 const User = require('./models/user')
 
+
+
+
+
+
+
+// app.use((req, res, next) => {
+//     if(req.method === 'GET'){
+//         res.send('GET requests are disabled!')
+//     } else{
+//         next()
+//     }
+// })
+
+//Setup middleware for maintainance mode
+// app.use((req, res, next) => {
+//     res.status(503).send('The site is under maintainance. Please try again after sometime.')
+// })
