@@ -28,9 +28,33 @@ const upload = multer({
         // cb(undefined, false) // Reject upload silently
     }
 })
+// Commenting for referance. Removing the middleware to add custom middleware to return JSON error instead of the default HTML error
+// app.post('/upload', upload.single('upload'), (req,res) => {
+//     res.send()
+// })
+// Error handling using custom middleware. Will be combining with upload.single() at the bottom
+// const errorMiddleware = (req, res, next) => {
+//     throw new Error('From my middleware')
+// }
+
+// app.post('/upload', errorMiddleware, (req,res) => {
+//     res.send()
+// }, (error, req, res, next) => {
+//     res.status(400).send({ error: error.message })
+// })
+const errorMiddleware = (req, res, next) => {
+    throw new Error('From my middleware')
+}
+// It is required to pass all four arguments to let the express know that it's the function to be executed when it catches an error. The four arguments are error, req, res, next
 app.post('/upload', upload.single('upload'), (req,res) => {
     res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message })
 })
+
+
+
+
 
 app.use(express.json())
 app.use(userRouter)
