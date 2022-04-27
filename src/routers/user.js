@@ -138,7 +138,8 @@ router.delete('/users/me', auth, async (req, res) => {
 
 const multer = require('multer')
 const upload = multer({
-    dest: 'avatars',
+    // When we don't specify dest, the multer is not going to save it in the file storage, instead it's gonna pass that responsibility to the cb function (req,res){}
+    // dest: 'avatars', // Changing the destination from file storage to database buffer. File storage will be wiped everytime we deploy the project to heroku
     limits: {
         fileSize: 1000000
     },
@@ -149,10 +150,20 @@ const upload = multer({
         cb(undefined, true)
     }
 })
-router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    req.user.avatar = req.file.buffer
+    await req.user.save()
+    // Multer is processing the file, checking the validation and all. The callback function
+    // is saving the file as buffer into the user database.
     res.send()
 },  (error, req, res, next) => {
     res.status(400).send({ error: error.message })
+})
+
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    req.user.avatar = undefined
+    await req.user.save()
+    res.status(200).send()
 })
 
 
