@@ -66,11 +66,14 @@ userSchema.virtual('tasks', {
 
 // .methods are for individual instinct "user" and .statics are for all the "User"
 
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function () { //Read Profile
     const user = this
     const userObject = user.toObject()
+
     delete userObject.password
     delete userObject.tokens
+    delete userObject.avatar //We don't have to return avatar for this. It will slow down the process. 
+
     return userObject
 }
 
