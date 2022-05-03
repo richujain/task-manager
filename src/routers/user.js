@@ -3,6 +3,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 const sharp = require('sharp')
+const { sendWelcomeEmail } = require('../emails/account')
 
 
 router.post('/users', async (req, res) => {
@@ -10,6 +11,7 @@ router.post('/users', async (req, res) => {
 
     try{
         await user.save()
+        sendWelcomeEmail(user.email, user.name)
         // The code here runs only if the above code runs successfully without any error. 
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
@@ -151,6 +153,8 @@ const upload = multer({
         cb(undefined, true)
     }
 })
+// Avatar CRUD Operations
+// Create and Update
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
     const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
     req.user.avatar = buffer
@@ -162,7 +166,7 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
     res.status(400).send({ error: error.message })
 })
 
-
+// Delete
 router.delete('/users/me/avatar', auth, async (req, res) => {
     req.user.avatar = undefined
     await req.user.save()
@@ -170,6 +174,7 @@ router.delete('/users/me/avatar', auth, async (req, res) => {
 })
 
 //Fetching an avatar
+// Read
 router.get('/users/:id/avatar', async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
