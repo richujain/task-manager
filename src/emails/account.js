@@ -1,7 +1,7 @@
 const sgMail = require('@sendgrid/mail')
 const { text } = require('express')
 
-const sendgridAPIKey = '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'
+const sendgridAPIKey = ''
 
 sgMail.setApiKey(sendgridAPIKey)
 
@@ -14,6 +14,16 @@ const sendWelcomeEmail = (email, name) => {
     })
 }
 
+const sendCancelationEmail = (email, name) => {
+    sgMail.send({
+        to: email,
+        from: 'richupulimoottil@gmail.com',
+        subject: 'We are going to miss you!',
+        text: `Goodbye ${name}. Is there anything we could've done to kept you on board?`
+    })
+}
+
 module.exports = {
-    sendWelcomeEmail
+    sendWelcomeEmail,
+    sendCancelationEmail
 }

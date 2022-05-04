@@ -3,7 +3,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 const sharp = require('sharp')
-const { sendWelcomeEmail } = require('../emails/account')
+const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 
 
 router.post('/users', async (req, res) => {
@@ -133,6 +133,7 @@ router.delete('/users/me', auth, async (req, res) => {
         //     return res.status(404).send()
         // }
         await req.user.remove()
+        sendCancelationEmail(req.user.email, req.user.name)
         res.send(req.user) //status 200 by default
     } catch(e){
         res.status(500).send()
