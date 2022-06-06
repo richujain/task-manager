@@ -4,7 +4,18 @@ const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.port // Removed 3000 local port because we set it as dev environmental variable in /config/dev.env
+//const port = process.env.PORT || 3000 //
+
+app.use(express.json())
+app.use(userRouter)
+app.use(taskRouter)
+
+app.listen(port, () => {
+    console.log('Server is up on port '+ port)
+})
+
+
 
 // const multer = require('multer')
 // const upload = multer({
@@ -51,13 +62,7 @@ const port = process.env.PORT || 3000
 //     res.status(400).send({ error: error.message })
 // })
 
-app.use(express.json())
-app.use(userRouter)
-app.use(taskRouter)
 
-app.listen(port, () => {
-    console.log('Server is up on port '+ port)
-})
 
 // const Task = require('./models/task')
 // const User = require('./models/user')
